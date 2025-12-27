@@ -19,6 +19,12 @@ export const messageDirectionEnum = pgEnum("message_direction", [
   "outbound",
 ]);
 
+export const userStatusEnum = pgEnum("user_status", [
+  "lead",
+  "active",
+  "suspended",
+]);
+
 // --- Core Domain ---
 
 export const appConfs = pgTable("app_confs", {
@@ -34,6 +40,8 @@ export const profiles = pgTable("profiles", {
   authUserId: text("auth_user_id").unique(),
   phoneNumber: text("phone_number").notNull().unique(),
   displayName: text("display_name"),
+  email: text("email"),
+  status: userStatusEnum("status").default("lead").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
