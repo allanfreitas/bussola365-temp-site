@@ -1,0 +1,72 @@
+# --- TIPO 1: RECEITAS ---
+- id: 1
+  name: "Salário"
+  description: "Recebimentos mensais fixos provenientes de trabalho ou emprego."
+  typeId: 1
+
+- id: 2
+  name: "Renda Extra"
+  description: "Ganhos ocasionais, freelancers, vendas de itens usados ou bônus."
+  typeId: 1
+
+- id: 3
+  name: "Investimentos"
+  description: "Dividendos, juros sobre capital, rendimentos de aplicações ou aluguéis."
+  typeId: 1
+
+- id: 4
+  name: "Outras Receitas"
+  description: "Entradas diversas como presentes, restituição de imposto ou reembolsos."
+  typeId: 1
+
+# --- TIPO 2: DESPESAS ---
+- id: 5
+  name: "Moradia"
+  description: "Aluguel, condomínio, manutenção da casa e contas de consumo (água, luz, internet)."
+  typeId: 2
+
+- id: 6
+  name: "Alimentação"
+  description: "Gastos com supermercado, feira, padaria, açougue e suplementos."
+  typeId: 2
+
+- id: 7
+  name: "Transporte"
+  description: "Combustível, transporte público, aplicativos de corrida, manutenção de veículo e seguro."
+  typeId: 2
+
+- id: 8
+  name: "Saúde"
+  description: "Planos de saúde, consultas médicas, exames, dentista e farmácia."
+  typeId: 2
+
+- id: 9
+  name: "Educação"
+  description: "Mensalidades escolares ou universitárias, cursos livres, livros e material escolar."
+  typeId: 2
+
+- id: 10
+  name: "Lazer"
+  description: "Restaurantes, delivery, cinema, viagens, hobbies e serviços de streaming."
+  typeId: 2
+
+- id: 11
+  name: "Pessoal"
+  description: "Vestuário, calçados, cabeleireiro, cosméticos e cuidados estéticos."
+  typeId: 2
+
+- id: 12
+  name: "Financeiro"
+  description: "Tarifas bancárias, juros de cartão, pagamento de empréstimos, dívidas e impostos."
+  typeId: 2
+
+# --- ADIÇÕES SUGERIDAS ---
+- id: 13
+  name: "Seguros"
+  description: "Seguros de vida, auto, residencial ou outros prêmios anuais/mensais."
+  typeId: 2
+
+- id: 14
+  name: "Doações"
+  description: "Contribuições para caridade, causas sociais ou religiosas."
+  typeId: 2

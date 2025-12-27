@@ -1,0 +1,6 @@
+- confKey: "whatapp_business_number_id"
+  confValue: "925500373976642"
+  description: "Whatsapp Bussines Number ID"
+- confKey: "jobs_enabled"
+  confValue: "NAO"
+  description: "Se Vai Processar Via Jobs a Mensagem ou diretamente"

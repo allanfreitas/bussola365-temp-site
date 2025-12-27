@@ -1,0 +1,9 @@
+- code: "BUSSOLA365"
+  description: "Cupom de lançamento"
+  discountType: "percentage"
+  discountValue: 100
+  maxUses: 100
+  timesUsed: 0
+  validFrom: "2025-12-12T16:11:10Z"
+  validUntil: "2026-01-17T23:59:59Z"
+  active: true

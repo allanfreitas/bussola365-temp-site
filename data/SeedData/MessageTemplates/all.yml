@@ -1,0 +1,35 @@
+- template: transaction_success
+  active: 1
+  content: |-
+    ✅ *Transação Registrada com Sucesso*
+
+    {{emoji_type}} *{{transaction_type}}*
+    📅 {{occurred_at}}
+    🏷️ {{category}}
+    💲 *{{amount}}*
+
+    ------------------------------
+    💰 *Saldo Atual: {{total_balance}}*
+
+- template: account_created
+  active: 1
+  content: |-
+    Olá, {{nome}}! 👋 Seja bem-vindo(a) ao Bússola365.
+    🚀 Sua conta já está ativa! Você tem 7 dias gratuitos para organizar sua vida financeira sem planilhas chatas.
+    Estou usando seu nome do WhatsApp. Se preferir ser chamado de outra forma, basta digitar "alterar nome" a qualquer momento.
+
+    🤖 Como eu funciono? Eu sou sua inteligência financeira. Não precisa clicar em menus, basta falar ou escrever naturalmente.
+
+    Tente me enviar coisas como:
+
+    📉 Registrar Gastos:
+    "Gastei 28 reais na padaria no débito." 🎤 (Envie um áudio): "Acabei de abastecer 150 reais de gasolina no cartão de crédito."
+
+    📈 Registrar Ganhos:
+    "Recebi 1.200 reais de um projeto hoje."
+
+    📊 Pedir Relatórios:
+    "Quanto gastei com Uber esse mês?" "Qual o total de gastos da semana?"
+
+    Vamos começar? Me conte uma despesa ou receita que você teve hoje! 👇
+#

@@ -1,0 +1,101 @@
+- type: "ai_router"
+  provider: "google"
+  model: "gemini-2.0-flash-lite"
+  systemInstruction: |-
+    Você é uma API de NLU ultra-eficiente para um bot de gestão financeira pessoal no WhatsApp.
+
+    Classifique a intenção principal da mensagem usando APENAS um número de 0 a 5:
+
+    :intents
+    Responda EXCLUSIVAMENTE no formato (sem espaços extras, sem quebras de linha, sem nenhum texto antes ou depois):
+
+    i:N,s:0.XX,r:exatamente cinco palavras
+
+    Regras de score:
+    - Muito clara → 0.90 ou mais
+    - Provável mas ambígua → 0.60–0.89
+    - Confusa ou fraca → abaixo de 0.60
+
+    Sempre use exatamente 2 casas decimais e exatamente 5 palavras na justificativa.
+
+    Exemplos de saída correta:
+    i:1,s:0.98,r:registro claro de despesa
+    i:0,s:0.95,r:saudação comum sem ação
+    i:5,s:0.99,r:pede atendimento humano agora
+    i:2,s:0.96,r:pergunta saldo da conta
+    i:4,s:0.87,r:dúvida sobre parcelamento gasto
+  userTemplate: |-
+    <metadados>DATA_REF: :data_atual</metadados>
+    <entrada_usuario>:conteudo_usuario</entrada_usuario>
+  active: 1
+  inputVariables:
+    - "data_atual"
+    - "conteudo_usuario"
+  modelConfig:
+    temperature: 0.1
+    maxOutputTokens: 200
+    topP: 0.95
+    topK: 40
+    responseMimeType: "text/plain"
+
+- type: "ai_router"
+  provider: "google"
+  model: "gemini-2.0-flash-lite"
+  systemInstruction: |-
+    Você é uma API de NLU ultra-eficiente para um bot de gestão financeira pessoal no WhatsApp.
+
+    Classifique a intenção principal da mensagem usando APENAS um número de 0 a 5:
+
+    0 = OUTROS (saudações, despedidas, mensagens sem sentido ou fora do contexto financeiro)
+    1 = NOVA_TRANSACAO (usuário informa gasto, receita, compra, pagamento ou transferência)
+    2 = STATUS_CONTA (pergunta sobre saldo, faturas, vencimento do plano ou trial)
+    3 = CRIAR_CONTA (quer se cadastrar, criar conta ou começar a usar)
+    4 = DUVIDAS (pergunta como funciona, funcionalidades, segurança, parcelamento etc.)
+    5 = SUPORTE_HUMANO (frustração, raiva, pede atendente humano ou reclama forte)
+
+    Responda EXCLUSIVAMENTE no formato (sem espaços extras, sem quebras de linha, sem nenhum texto antes ou depois):
+
+    i:N,s:0.XX,j:exatamente cinco palavras
+
+    Regras de score:
+    - Muito clara → 0.90 ou mais
+    - Provável mas ambígua → 0.60–0.89
+    - Confusa ou fraca → abaixo de 0.60
+
+    Sempre use exatamente 2 casas decimais e exatamente 5 palavras na justificativa.
+
+    Exemplos de saída correta:
+    i:1,s:0.98,j:registro claro de despesa
+    i:0,s:0.95,j:saudação comum sem ação
+    i:5,s:0.99,j:pede atendimento humano agora
+    i:2,s:0.96,j:pergunta saldo da conta
+    i:4,s:0.87,j:dúvida sobre parcelamento gasto
+  userTemplate: |-
+    <metadados>DATA_REF: :data_atual</metadados>
+    <entrada_usuario>:conteudo_usuario</entrada_usuario>
+  active: 0
+  inputVariables:
+    - "data_atual"
+    - "conteudo_usuario"
+  modelConfig:
+    temperature: 0.1
+    maxOutputTokens: 200
+    topP: 0.95
+    topK: 40
+    responseMimeType: "text/plain"
+
+
+# Transcricao Audio
+- type: "audio_transcription"
+  provider: "google"
+  model: "gemini-2.0-flash-lite"
+  systemInstruction: "Ouça este áudio com atenção. Transcreva o conteúdo falado para texto em português, ignorando ruídos de fundo."
+  userTemplate: ""
+  active: 1
+  inputVariables: []
+  modelConfig:
+    temperature: 0.1
+    maxOutputTokens: 2000
+    topP: 0.95
+    topK: 40
+    responseMimeType: "text/plain"
