@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "bun --bun next dev",
+    "build": "bun --bun next build",
+    "start": "bun --bun next start",
+    "inngest-yml": "bunx inngest start --config ./inngest.yaml",
+    "inngest": "bunx inngest start --port 8288 --sdk-url http://localhost:3000/api/inngest --postgres-uri $INNGEST_POSTGRES_URI --redis-uri $INNGEST_REDIS_URI",
     "lint": "eslint"
   },
   "dependencies": {
