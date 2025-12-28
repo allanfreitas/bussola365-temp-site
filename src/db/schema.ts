@@ -14,6 +14,10 @@ import {
 } from "drizzle-orm/pg-core";
 import { desc, relations, sql } from "drizzle-orm";
 
+export * from "./auth-schema";
+
+// --- Enums ---
+
 export const messageDirectionEnum = pgEnum("message_direction", [
   "inbound",
   "outbound",
