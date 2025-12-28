@@ -36,9 +36,9 @@ export class SeedYmlService {
     await this.importFromFolder("AppConfs", appConfs);
     //await this.importFromFolder("Users", users);
     await this.importFromFolder("Categories", categories);
-    await this.importFromFolder("Coupons", coupons);
+    await this.importFromFolder("Coupons", coupons, "coupons");
     await this.importFromFolder("MessageIntents", messageIntents);
-    await this.importFromFolder("Prompts", prompts, true); // Special handling for prompts
+    await this.importFromFolder("Prompts", prompts, "prompt"); // Special handling for prompts
     await this.importFromFolder("MessageTemplates", messageTemplates);
 
     console.log("Seeding completed.");
@@ -47,7 +47,7 @@ export class SeedYmlService {
   private async importFromFolder(
     folderName: string,
     table: EntityType,
-    isPrompt = false
+    tableName: string = ""
   ) {
     const folderPath = path.join(this.seedBasePath, folderName);
 
@@ -80,8 +80,12 @@ export class SeedYmlService {
         if (records.length > 0) {
           // Normalize records for DB
           const normalizedRecords = records.map((record: any) => {
-            if (isPrompt) {
+            if (tableName === "prompt") {
               return this.mapPrompt(record);
+            }
+
+            if (tableName === "coupons") {
+              return this.mapCoupons(record);
             }
             // General mapping: convert camelCase (from YAML) to snake_case (DB) if needed?
             // Drizzle definition uses camelCase keys mapping to snake_case columns automatically for inserts IF using type inference.
@@ -103,6 +107,7 @@ export class SeedYmlService {
         }
       } catch (ex: any) {
         console.error(`  ❌ ${file}: ERROR - ${ex.message}`);
+        console.error(ex);
       }
     }
 
@@ -150,6 +155,20 @@ export class SeedYmlService {
       modelConfig: dto.modelConfig || {},
       createdAt: new Date(),
       updatedAt: new Date(),
+    };
+  }
+
+  private mapCoupons(dto: any) {
+    return {
+      code: dto.code,
+      description: dto.description,
+      discountType: dto.discountType,
+      discountValue: dto.discountValue,
+      maxUses: dto.maxUses,
+      timesUsed: dto.timesUsed,
+      validFrom: new Date(dto.validFrom),
+      validUntil: new Date(dto.validUntil),
+      active: dto.active,
     };
   }
 }

@@ -6,12 +6,19 @@
     "dev": "bun --bun next dev",
     "build": "bun --bun next build",
     "start": "bun --bun next start",
+    "cli": "bun run scripts/cli.ts",
+    "db:generate": "bun run drizzle-kit generate",
+    "db:migrate": "bun run drizzle-kit migrate",
+    "db:reset": "rm -Rf migrations/* && bun run cli clean-db && bun run cli seed",
+    "db:studio": "bun run drizzle-kit studio",
     "inngest-yml": "bunx inngest start --config ./inngest.yaml",
     "inngest": "bunx inngest start --port 8288 --sdk-url http://localhost:3000/api/inngest --event-key $INNGEST_EVENT_KEY --signing-key $INNGEST_SIGNING_KEY --postgres-uri $INNGEST_POSTGRES_URI --redis-uri $INNGEST_REDIS_URI",
     "lint": "eslint"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
+    "chalk": "^5.6.2",
+    "commander": "^14.0.2",
     "drizzle-orm": "^0.45.1",
     "inngest": "^3.48.1",
     "js-yaml": "^4.1.1",
@@ -28,6 +35,7 @@
     "drizzle-kit": "^0.31.8",
     "eslint": "^9",
     "eslint-config-next": "16.1.1",
+    "postgres": "^3.4.7",
     "tailwindcss": "^4",
     "typescript": "^5"
   },

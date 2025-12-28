@@ -1,34 +1,27 @@
-- id: 0
-  name: "OTHERS"
+- name: "OTHERS"
   description: "saudações, oi, tchau, mensagens sem sentido ou fora do contexto financeiro"
   active: 1
 
-- id: 1
-  name: "NEW_TRANSACTION"
+- name: "NEW_TRANSACTION"
   description: "lançamento de despesa, receita, compra, pagamento, transferência"
   active: 1
 
-- id: 2
-  name: "REPORT"
+- name: "REPORT"
   description: "saldo, quanto tenho, quanto gastei ou ganhei, resumo mensal"
   active: 1
 
-- id: 3
-  name: "ACCOUNT_STATUS"
+- name: "ACCOUNT_STATUS"
   description: "validade plano/trial, compartilhar assinatura"
   active: 1
 
-- id: 4
-  name: "CREATE_ACCOUNT"
+- name: "CREATE_ACCOUNT"
   description: "quero me cadastrar, começar, criar conta"
   active: 1
 
-- id: 5
-  name: "QUESTIONS"
+- name: "QUESTIONS"
   description: "como funciona, parcelado, segurança, veio do Instagram etc."
   active: 1
 
-- id: 6
-  name: "HUMAN_SUPPORT"
+- name: "HUMAN_SUPPORT"
   description: "frustração, raiva, reclamação forte, pede humano/atendente"
   active: 1
