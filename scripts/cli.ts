@@ -52,6 +52,12 @@ program
       const email = process.env.ADMIN_EMAIL;
       const password = process.env.ADMIN_PASSWORD;
 
+      if (!email || !password) {
+        throw new Error(
+          "ADMIN_EMAIL and ADMIN_PASSWORD environment variables must be set"
+        );
+      }
+
       //await db.delete(schema.users).where(eq(schema.users.email, email));
       await db.delete(schema.users);
 

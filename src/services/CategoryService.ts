@@ -7,7 +7,7 @@ export class CategoryService {
     return await db.select().from(categories);
   }
 
-  async getById(id: number) {
+  async getById(id: string) {
     const [category] = await db
       .select()
       .from(categories)
