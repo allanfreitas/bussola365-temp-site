@@ -10,6 +10,67 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Cores Bussola365 */
+    --color-prussian-blue-50: #ebf1f9;
+    --color-prussian-blue-100: #d8e4f3;
+    --color-prussian-blue-200: #b1c8e7;
+    --color-prussian-blue-300: #8aaddb;
+    --color-prussian-blue-400: #6392cf;
+    --color-prussian-blue-500: #3c76c3;
+    --color-prussian-blue-600: #305f9c;
+    --color-prussian-blue-700: #244775;
+    --color-prussian-blue-800: #182f4e;
+    --color-prussian-blue-900: #0c1827;
+    --color-prussian-blue-950: #08111b;
+
+    --color-platinum-50: #f2f3f2;
+    --color-platinum-100: #e5e6e5;
+    --color-platinum-200: #caceca;
+    --color-platinum-300: #b0b5b0;
+    --color-platinum-400: #969c96;
+    --color-platinum-500: #7c837c;
+    --color-platinum-600: #636963;
+    --color-platinum-700: #4a4f4a;
+    --color-platinum-800: #313531;
+    --color-platinum-900: #191a19;
+    --color-platinum-950: #111211;
+
+    --color-iron-grey-50: #f0f3f4;
+    --color-iron-grey-100: #e1e8ea;
+    --color-iron-grey-200: #c4d0d4;
+    --color-iron-grey-300: #a6b9bf;
+    --color-iron-grey-400: #89a2a9;
+    --color-iron-grey-500: #6b8a94;
+    --color-iron-grey-600: #566f76;
+    --color-iron-grey-700: #405359;
+    --color-iron-grey-800: #2b373b;
+    --color-iron-grey-900: #151c1e;
+    --color-iron-grey-950: #0f1315;
+
+    --color-jungle-green-50: #e7fef7;
+    --color-jungle-green-100: #cefdee;
+    --color-jungle-green-200: #9dfbdd;
+    --color-jungle-green-300: #6cf9cc;
+    --color-jungle-green-400: #3bf7bb;
+    --color-jungle-green-500: #0af5ab;
+    --color-jungle-green-600: #08c488;
+    --color-jungle-green-700: #069366;
+    --color-jungle-green-800: #046244;
+    --color-jungle-green-900: #023122;
+    --color-jungle-green-950: #012218;
+
+    --color-steel-azure-50: #e6f1ff;
+    --color-steel-azure-100: #cde3fe;
+    --color-steel-azure-200: #9bc7fd;
+    --color-steel-azure-300: #68abfd;
+    --color-steel-azure-400: #368ffc;
+    --color-steel-azure-500: #0473fb;
+    --color-steel-azure-600: #035cc9;
+    --color-steel-azure-700: #024597;
+    --color-steel-azure-800: #022e64;
+    --color-steel-azure-900: #011732;
+    --color-steel-azure-950: #011023;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -19,8 +80,18 @@
   }
 }
 
-body {
+/* body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
-}
+} */
+
+body {
+        background-color: #08111b; /* Prussian Blue 950 */
+        color: #f2f3f2; /* Platinum 50 */
+      }
+      .gradient-text {
+        background: linear-gradient(90deg, #0af5ab, #368ffc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }

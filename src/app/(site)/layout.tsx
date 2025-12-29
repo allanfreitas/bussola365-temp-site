@@ -1,3 +1,12 @@
+import type { Metadata } from "next";
+import "./../globals.css";
+import SiteFooter from "@/components/site-layout/SiteFooter";
+
+export const metadata: Metadata = {
+  title: "Bússola365",
+  description: "Norteando suas finanças com simplicidade e tecnologia",
+};
+
 export default function SiteLayout({
   children,
 }: {
@@ -9,8 +18,9 @@ export default function SiteLayout({
         <title>Bussola365 - Suas Finanças na direção correta</title>
       </head>
       <body>
-        <div className="flex min-h-screen">
-          <main className="flex-1 bg-gray-50 p-6">{children}</main>
+        <div className="min-h-screen font-sans selection:bg-jungle-green-500 selection:text-prussian-blue-950">
+          {children}
+          <SiteFooter />
         </div>
       </body>
     </html>
