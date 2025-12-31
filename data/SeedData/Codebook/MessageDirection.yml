@@ -1,0 +1,14 @@
+# --- TIPO MessageDirectionEnum ---
+- type: "message_direction"
+  id: 1
+  name: "Entrada"
+  description: "Entrada"
+  color: "white"
+  icon: ""
+
+- type: "message_direction"
+  id: 2
+  name: "Saída"
+  description: "Saída"
+  color: "white"
+  icon: ""

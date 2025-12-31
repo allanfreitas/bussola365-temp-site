@@ -1,11 +1,14 @@
+import { InngestEnum, MessageTypeEnum } from "@/enums/enums";
 import { db } from "../db";
 import { webhooks, profiles, messages, attachments } from "../db/schema";
 import { eq } from "drizzle-orm";
+import configService from "./config-service";
+import { inngest } from "@/inngest/client";
 
-export class WebhookService {
-  constructor() {}
+class WebhookService {
+  constructor() { }
 
-  async processWebhook(webhookId: string): Promise<void> {
+  async processWebhook(webhookId: string): Promise<string[]> {
     const [webhook] = await db
       .select()
       .from(webhooks)
@@ -13,8 +16,12 @@ export class WebhookService {
       .limit(1);
     if (!webhook) {
       console.error(`Webhook ${webhookId} not found`);
-      return;
+      return [];
     }
+
+    const jobEnabled = await configService.getJobEnabled();
+
+    const messageIds: string[] = [];
 
     // Processing status
     await db
@@ -25,6 +32,7 @@ export class WebhookService {
     try {
       const payload = webhook.payload as any; // Typed appropriately in real app
 
+      let hasMessages = false;
       // Basic WhatsApp generic processing
       if (payload.entry) {
         for (const entry of payload.entry) {
@@ -32,37 +40,38 @@ export class WebhookService {
             const value = change.value;
 
             // Process Contacts
-            if (value.contacts) {
-              for (const contact of value.contacts) {
-                const waId = contact.wa_id;
-                const name = contact.profile?.name || "Unknown";
+            // if (value.contacts) {
+            //   for (const contact of value.contacts) {
+            //     const waId = contact.wa_id;
+            //     const name = contact.profile?.name || "Unknown";
 
-                let [profile] = await db
-                  .select()
-                  .from(profiles)
-                  .where(eq(profiles.phoneNumber, waId))
-                  .limit(1);
-                if (!profile) {
-                  [profile] = await db
-                    .insert(profiles)
-                    .values({
-                      phoneNumber: waId,
-                      displayName: name,
-                      //status: "lead",
-                      //email: `${waId}@bussola365`, // Better-Auth might require email
-                    })
-                    .returning();
-                } else {
-                  await db
-                    .update(profiles)
-                    .set({ displayName: name, updatedAt: new Date() })
-                    .where(eq(profiles.id, profile.id));
-                }
-              }
-            }
+            //     let [profile] = await db
+            //       .select()
+            //       .from(profiles)
+            //       .where(eq(profiles.phoneNumber, waId))
+            //       .limit(1);
+            //     if (!profile) {
+            //       [profile] = await db
+            //         .insert(profiles)
+            //         .values({
+            //           phoneNumber: waId,
+            //           displayName: name,
+            //           //status: "lead",
+            //           //email: `${waId}@bussola365`, // Better-Auth might require email
+            //         })
+            //         .returning();
+            //     } else {
+            //       await db
+            //         .update(profiles)
+            //         .set({ displayName: name, updatedAt: new Date() })
+            //         .where(eq(profiles.id, profile.id));
+            //     }
+            //   }
+            // }
 
             // Process Messages
             if (value.messages) {
+              hasMessages = true;
               for (const msgData of value.messages) {
                 const mid = msgData.id;
                 const [existing] = await db
@@ -70,13 +79,20 @@ export class WebhookService {
                   .from(messages)
                   .where(eq(messages.messageUid, mid))
                   .limit(1);
-                if (existing) continue;
+                if (existing) {
+                  messageIds.push(existing.id);
+                  continue;
+                }
 
                 const timestamp = parseInt(msgData.timestamp, 10);
                 const createdAt = new Date(timestamp * 1000);
                 const type = msgData.type;
                 const from = msgData.from;
-                const content = type === "text" ? msgData.text?.body : null;
+                let content = type === MessageTypeEnum.TEXT ? msgData.text?.body : null;
+
+                if (type === MessageTypeEnum.INTERACTIVE) {
+                  content = msgData.interactive;
+                }
 
                 const [newMessage] = await db
                   .insert(messages)
@@ -91,8 +107,13 @@ export class WebhookService {
                   })
                   .returning();
 
+                messageIds.push(newMessage.id);
+
                 // Media
-                if (["image", "audio", "video", "document"].includes(type)) {
+                if ([
+                  MessageTypeEnum.IMAGE, MessageTypeEnum.AUDIO,
+                  MessageTypeEnum.VIDEO, MessageTypeEnum.DOCUMENT
+                ].includes(type)) {
                   const media = msgData[type];
                   if (media) {
                     await db.insert(attachments).values({
@@ -104,26 +125,30 @@ export class WebhookService {
                   }
                 }
 
-                // TODO: Enqueue Job
-                // await QueueService.add("route-message", { messageId: newMessage.id });
               }
             }
           }
         }
       }
 
-      // Success
+      let finalStatus = hasMessages ? 3 : 4;
       await db
         .update(webhooks)
-        .set({ status: 3, processedAt: new Date() })
+        .set({ status: finalStatus, processedAt: new Date() })
         .where(eq(webhooks.id, webhookId));
+
+      return messageIds;
+
     } catch (error) {
       console.error("Error processing webhook", error);
       await db
         .update(webhooks)
-        .set({ status: 4 })
+        .set({ status: 5 })
         .where(eq(webhooks.id, webhookId));
       throw error;
     }
   }
 }
+
+const webhookService = new WebhookService();
+export default webhookService;

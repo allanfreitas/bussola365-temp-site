@@ -1,0 +1,46 @@
+# --- TIPO WebhookStatusEnum ---
+- type: "webhook_status"
+  id: 1
+  name: "Pendente"
+  description: "Webhook criado e aguardando processamento"
+  color: "white"
+  icon: ""
+
+- type: "webhook_status"
+  id: 2
+  name: "Processando"
+  description: "Webhook em processamento"
+  color: "white"
+  icon: ""
+
+- type: "webhook_status"
+  id: 3
+  name: "Concluído"
+  description: "Webhook processado com sucesso"
+  color: "white"
+  icon: ""
+
+- type: "webhook_status"
+  id: 4
+  name: "Ignorado"
+  description: "Webhook ignorado"
+  color: "white"
+  icon: ""
+
+- type: "webhook_status"
+  id: 5
+  name: "Falhou"
+  description: "Falha em qualquer etapa"
+  color: "white"
+  icon: ""
+
+
+
+# --- TIPO WalletStatusEnum ---
+- type: "wallet_status"
+  id: 1
+  name: "Ativo"
+  description: "Ativo"
+  color: "white"
+  icon: ""
+

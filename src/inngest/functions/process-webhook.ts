@@ -1,9 +1,10 @@
+import { InngestEnum } from "@/enums/enums";
 import { inngest } from "@/inngest/client";
-import { webhookService } from "@/services/webhook-service";
+import webhookService from "@/services/WebhookService";
 
 export const processWebhook = inngest.createFunction(
     { id: "process-webhook" },
-    { event: "webhook.received" },
+    { event: InngestEnum.WebhookReceived },
     async ({ event, step }) => {
         const { webhookId } = event.data;
 
@@ -13,11 +14,10 @@ export const processWebhook = inngest.createFunction(
 
         if (messageIds && messageIds.length > 0) {
             const events = messageIds.map(id => ({
-                name: "message.created",
+                name: InngestEnum.MessageCreated,
                 data: { messageId: id }
             }));
-
-            await step.sendEvent("trigger-message-router", events as any);
+            await step.sendEvent("message-created", events as any);
         }
 
         return { processed: true, messagesCreated: messageIds?.length || 0 };

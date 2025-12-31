@@ -1,0 +1,72 @@
+
+  # --- TIPO MessageStatusEnum ---
+- type: "message_status"
+  id: 1
+  name: "Pendente"
+  description: "Mensagem criada e aguardando processamento"
+  color: "white"
+  icon: ""
+
+- type: "message_status"
+  id: 2
+  name: "Classificado"
+  description: "Mensagem classificada"
+  color: "white"
+  icon: ""
+
+- type: "message_status"
+  id: 3
+  name: "Intenção"
+  description: "Intenção já processada"
+  color: "white"
+  icon: ""
+
+- type: "message_status"
+  id: 4
+  name: "Roteada"
+  description: "Prompt/job definido e disparado"
+  color: "white"
+  icon: ""
+
+- type: "message_status"
+  id: 5
+  name: "Concluído"
+  description: "Resposta enviada"
+  color: "white"
+  icon: ""
+
+- type: "message_status"
+  id: 6
+  name: "Falhou"
+  description: "Falha em qualquer etapa"
+  color: "white"
+  icon: ""
+
+# --- TIPO AttachmentStatusEnum ---
+- type: "attachment_status"
+  id: 1
+  name: "Pendente"
+  description: "Aguardando download e processamento"
+  color: "white"
+  icon: ""
+
+- type: "attachment_status"
+  id: 2
+  name: "Processando"
+  description: "Anexo em processamento (ex: upload, transcrição)"
+  color: "white"
+  icon: ""
+
+- type: "attachment_status"
+  id: 3
+  name: "Pronto"
+  description: "Anexo processado com sucesso"
+  color: "white"
+  icon: ""
+
+- type: "attachment_status"
+  id: 4
+  name: "Falhou"
+  description: "Falha no processamento do anexo"
+  color: "white"
+  icon: ""

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { webhooks } from "@/db/schema";
 import { inngest } from "@/inngest/client";
+import configService from "@/services/config-service";
 
 // GET: Webhook Verification
 export async function GET(req: NextRequest) {
@@ -31,6 +32,8 @@ export async function POST(req: NextRequest) {
       return new NextResponse("Bad Request: Empty Body", { status: 400 });
     }
 
+    const jobEnabled = await configService.getJobEnabled();
+
     // Save Raw Webhook to DB
     const [inserted] = await db
       .insert(webhooks)
@@ -47,10 +50,12 @@ export async function POST(req: NextRequest) {
     console.log(`Received webhook and saved: ${inserted.id}`);
 
     // Trigger Inngest Event (ProcessWebhookJob equivalent)
-    // await inngest.send({
-    //     name: "webhook.received",
-    //     data: { webhookId: inserted.id }
-    // });
+    if (jobEnabled) {
+      await inngest.send({
+        name: "webhook.received",
+        data: { webhookId: inserted.id }
+      });
+    }
 
     return new NextResponse("OK", { status: 200 });
   } catch (error) {

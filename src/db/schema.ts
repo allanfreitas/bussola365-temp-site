@@ -8,28 +8,19 @@ import {
   uuid,
   smallint,
   primaryKey,
-  pgEnum,
   real,
   index,
 } from "drizzle-orm/pg-core";
 import { desc, relations, sql } from "drizzle-orm";
+import { CodebookTypeEnum } from "@/enums/enums";
 
 export * from "./auth-schema";
 
-// --- Enums ---
+export * from "./code-book-views";
 
-export const messageDirectionEnum = pgEnum("message_direction", [
-  "inbound",
-  "outbound",
-]);
-
-export const userStatusEnum = pgEnum("user_status", [
-  "lead",
-  "active",
-  "suspended",
-]);
 
 // --- Core Domain ---
+
 
 export const appConfs = pgTable("app_confs", {
   confKey: text("conf_key").primaryKey(),
@@ -45,7 +36,7 @@ export const profiles = pgTable("profiles", {
   phoneNumber: text("phone_number").notNull().unique(),
   displayName: text("display_name"),
   email: text("email"),
-  status: userStatusEnum("status").default("lead").notNull(),
+  statusId: integer("status_id").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
@@ -60,6 +51,8 @@ export const wallets = pgTable("wallets", {
     .primaryKey(),
   name: text("name").notNull(),
   description: text("description"),
+  statusId: integer("status_id").notNull(),
+  active: boolean("active").default(true),
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
@@ -78,6 +71,7 @@ export const walletMembers = pgTable(
       .notNull()
       .references(() => profiles.id, { onDelete: "cascade" }),
     role: text("role").default("member"),
+    active: boolean("active").default(true),
     joinedAt: timestamp("joined_at", { withTimezone: true })
       .defaultNow()
       .notNull(),
@@ -89,10 +83,10 @@ export const webhooks = pgTable("webhooks", {
   id: uuid("id")
     .default(sql`uuidv7()`)
     .primaryKey(),
-  platform: text("platform").notNull(),
+  platformId: integer("platform_id").notNull(),
   payload: jsonb("payload").notNull().default({}),
   headers: jsonb("headers").notNull().default({}),
-  status: integer("status").default(1),
+  statusId: integer("status_id").default(1),
   eventType: text("event_type"),
   processedAt: timestamp("processed_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true })
@@ -108,7 +102,7 @@ export const prompts = pgTable("prompts", {
     .default(sql`uuidv7()`)
     .primaryKey(),
   type: text("type").notNull(),
-  provider: text("provider").notNull().default("gemini"),
+  provider: text("provider").notNull(),
   model: text("model").notNull(),
   systemInstruction: text("system_instruction").notNull(),
   userTemplate: text("user_template").notNull(),
@@ -150,7 +144,7 @@ export const messages = pgTable("messages", {
     .primaryKey(),
   webhookId: uuid("webhook_id").references(() => webhooks.id),
   senderId: text("sender_id").notNull(),
-  direction: messageDirectionEnum("direction").default("inbound").notNull(),
+  directionId: integer("direction_id").notNull(),
   parentId: uuid("parent_id"),
   messageUid: text("message_uid").notNull(),
   messageType: text("message_type").notNull(),
@@ -158,10 +152,9 @@ export const messages = pgTable("messages", {
   promptId: uuid("prompt_id").references(() => prompts.id),
   intentId: uuid("intent_id").references(() => messageIntents.id),
   intentScore: real("intent_score"),
-  statusId: smallint("status_id").default(1).notNull(),
+  statusId: integer("status_id").default(1).notNull(),
   externalId: text("external_id"),
   processedAt: timestamp("processed_at", { withTimezone: true }),
-  sentAt: timestamp("sent_at", { withTimezone: true }),
 
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
@@ -169,7 +162,11 @@ export const messages = pgTable("messages", {
   updatedAt: timestamp("updated_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
-});
+}, (table) => [
+  {
+    idx_messages_sender_id: index("idx_messages_sender_id").on(table.senderId),
+  }
+]);
 
 export const transactions = pgTable(
   "transactions",
@@ -200,12 +197,12 @@ export const transactions = pgTable(
       .defaultNow()
       .notNull(),
   },
-  (table) => ({
+  (table) => [{
     walletDateIdx: index("idx_transactions_wallet_date").on(
       table.walletId,
       desc(table.transactionDate)
     ),
-  })
+  }]
 );
 
 export const coupons = pgTable("coupons", {
@@ -247,7 +244,7 @@ export const messageLogs = pgTable(
     messageId: uuid("message_id")
       .notNull()
       .references(() => messages.id),
-    statusId: smallint("status_id"),
+    statusId: integer("status_id").notNull(),
     step: text("step"),
     description: text("description"),
     metadata: jsonb("metadata"),
@@ -259,10 +256,7 @@ export const messageLogs = pgTable(
     createdAt: timestamp("created_at", { withTimezone: true })
       .defaultNow()
       .notNull(),
-  },
-  (table) => ({
-    // Add FKs if needed, or keep loose.
-  })
+  }
 );
 
 export const attachments = pgTable("attachments", {
@@ -276,7 +270,7 @@ export const attachments = pgTable("attachments", {
   fileType: text("file_type"),
   fileUrl: text("file_url"),
   fileSize: integer("file_size"),
-  statusId: smallint("status_id").default(1),
+  statusId: integer("status_id").default(1),
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
     .notNull(),

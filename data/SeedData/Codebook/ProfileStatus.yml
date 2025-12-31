@@ -1,0 +1,49 @@
+# --- TIPO ProfileStatusEnum ---
+- type: "profile_status"
+  id: 1
+  name: "Lead"
+  description: "Lead"
+  color: "white"
+  icon: ""
+
+- type: "profile_status"
+  id: 2
+  name: "Onboarding"
+  description: "Onboarding"
+  color: "white"
+  icon: ""
+
+- type: "profile_status"
+  id: 3
+  name: "Trial"
+  description: "Trial"
+  color: "white"
+  icon: ""
+
+- type: "profile_status"
+  id: 4
+  name: "Trial Expired"
+  description: "Trial Expired"
+  color: "white"
+  icon: ""
+
+- type: "profile_status"
+  id: 5
+  name: "Inactive"
+  description: "Inactive"
+  color: "white"
+  icon: ""
+
+- type: "profile_status"
+  id: 6
+  name: "Blocked"
+  description: "Blocked"
+  color: "white"
+  icon: ""
+
+- type: "profile_status"
+  id: 7
+  name: "Active"
+  description: "Active"
+  color: "white"
+  icon: ""
