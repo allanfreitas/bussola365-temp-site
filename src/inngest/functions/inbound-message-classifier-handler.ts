@@ -1,6 +1,8 @@
 // inngest/functions/inbound-message-classifier.ts
 import { InngestEventType } from "@/enums/enums";
 import { inngest } from "@/inngest/client";
+import configService from "@/services/config-service";
+import inboundMessageClassifier from "@/services/inbound-message-classifier";
 
 export const inboundMessageClassifierHandler = inngest.createFunction(
     {
@@ -10,48 +12,17 @@ export const inboundMessageClassifierHandler = inngest.createFunction(
     },
     { event: InngestEventType.InboundMessage },
     async ({ event }) => {
+        const jobsEnabled = await configService.getJobEnabled();
+
         for (const messageId of event.data.messageIds) {
-            const message = await getMessage(messageId);
-            const profile = await getOrCreateProfile(message.phoneNumber);
 
-            await attachProfileToMessage(messageId, profile.id);
+            const domainEvent = await inboundMessageClassifier.execute(messageId);
 
-            switch (profile.status) {
-                case "lead":
-                case "onboarding":
-                    await inngest.send({
-                        name: "message.requires.onboarding",
-                        data: {
-                            messageId,
-                            profileId: profile.id,
-                            status: profile.status,
-                        },
-                    });
-                    break;
-
-                case "trial":
-                case "active":
-                    await inngest.send({
-                        name: "message.ready.for.conversation",
-                        data: {
-                            messageId,
-                            profileId: profile.id,
-                            status: profile.status,
-                        },
-                    });
-                    break;
-
-                case "trial_expired":
-                    await inngest.send({
-                        name: "message.requires.trial_recovery",
-                        data: {
-                            messageId,
-                            profileId: profile.id,
-                            status: profile.status,
-                        },
-                    });
-                    break;
+            if (domainEvent.name === InngestEventType.DoNothing || !jobsEnabled) {
+                continue;
             }
+
+            await inngest.send(domainEvent);
         }
     }
 );

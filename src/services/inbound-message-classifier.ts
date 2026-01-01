@@ -1,9 +1,8 @@
 import { db } from "@/db";
 import { Message, messages, Profile, profiles } from "@/db/schema";
-import { ProfileStatusEnum } from "@/enums/enums";
+import { InngestEventType, ProfileStatusEnum } from "@/enums/enums";
 import { DomainEvent } from "@/types/event-bus";
 import { eq } from "drizzle-orm";
-
 
 
 class InboundMessageClassifier {
@@ -15,7 +14,7 @@ class InboundMessageClassifier {
             case ProfileStatusEnum.LEAD:
             case ProfileStatusEnum.ONBOARDING:
                 return {
-                    name: "message.requires.onboarding",
+                    name: InngestEventType.MessageRequiresOnboarding,
                     data: {
                         messageId,
                         profileId: profile.id,
@@ -25,7 +24,7 @@ class InboundMessageClassifier {
             case ProfileStatusEnum.TRIAL:
             case ProfileStatusEnum.ACTIVE:
                 return {
-                    name: "message.ready.for.conversation",
+                    name: InngestEventType.MessageReadyForConversation,
                     data: {
                         messageId,
                         profileId: profile.id,
@@ -34,7 +33,7 @@ class InboundMessageClassifier {
                 };
             case ProfileStatusEnum.TRIAL_EXPIRED:
                 return {
-                    name: "message.requires.trial_recovery",
+                    name: InngestEventType.MessageRequiresTrialRecovery,
                     data: {
                         messageId,
                         profileId: profile.id,
@@ -42,7 +41,10 @@ class InboundMessageClassifier {
                     },
                 };
             default:
-                throw new Error("Invalid profile status");
+                return {
+                    name: InngestEventType.DoNothing,
+                    data: null,
+                };
         }
     }
 
@@ -63,7 +65,7 @@ class InboundMessageClassifier {
 
         const newProfile = await db.insert(profiles).values({
             phoneNumber,
-            statusId: 1,
+            statusId: ProfileStatusEnum.LEAD,
             createdAt: new Date(),
             updatedAt: new Date(),
         }).returning();

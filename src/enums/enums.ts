@@ -53,6 +53,10 @@ export const enum InngestEnum {
 export const InngestEventType = {
   WebhookReceived: "channel.webhook.received",
   InboundMessage: "inbound.messages.extracted",
+  MessageRequiresOnboarding: "message.requires.onboarding",
+  MessageReadyForConversation: "message.ready.for.conversation",
+  MessageRequiresTrialRecovery: "message.requires.trial_recovery",
+  DoNothing: "do_nothing",
 } as const;
 export type InngestEventTypeEnum = typeof InngestEventType[keyof typeof InngestEventType];
 
