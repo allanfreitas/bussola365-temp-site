@@ -11,7 +11,7 @@ import {
   real,
   index,
 } from "drizzle-orm/pg-core";
-import { desc, relations, sql } from "drizzle-orm";
+import { desc, InferModel, InferSelectModel, relations, sql } from "drizzle-orm";
 import { CodebookTypeEnum } from "@/enums/enums";
 
 export * from "./auth-schema";
@@ -357,3 +357,7 @@ export const attachmentsRelations = relations(attachments, ({ one }) => ({
     references: [messages.id],
   }),
 }));
+
+
+export type Message = InferSelectModel<typeof messages>
+export type Profile = InferSelectModel<typeof profiles>

@@ -1,6 +1,6 @@
 import { InngestEnum } from "@/enums/enums";
 import { inngest } from "@/inngest/client";
-import webhookService from "@/services/WebhookService";
+import webhookService from "@/services/wpp-webhook-service";
 
 export const processWebhook = inngest.createFunction(
     { id: "process-webhook" },

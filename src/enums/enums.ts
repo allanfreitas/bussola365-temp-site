@@ -50,6 +50,12 @@ export const enum InngestEnum {
   CacheMessageMidia = "cache_message_midia",
 }
 
+export const InngestEventType = {
+  WebhookReceived: "channel.webhook.received",
+  InboundMessage: "inbound.messages.extracted",
+} as const;
+export type InngestEventTypeEnum = typeof InngestEventType[keyof typeof InngestEventType];
+
 export const enum AdmDevActionEnum {
   ProcessWebhook = "webhook_process",
   RouteMessage = "message_route",

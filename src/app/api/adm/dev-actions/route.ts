@@ -7,7 +7,7 @@ import { headers } from "next/headers";
 //
 import { inngest } from "@/inngest/client";
 //
-import webhookService from "@/services/WebhookService";
+import webhookService from "@/services/wpp-webhook-service";
 
 const actions: Record<AdmDevActionEnum, (recordId: string) => Promise<any> | any> = {
     [AdmDevActionEnum.ProcessWebhook]: async (recordId: string) => {

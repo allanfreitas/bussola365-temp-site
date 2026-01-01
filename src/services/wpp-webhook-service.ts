@@ -1,11 +1,9 @@
-import { InngestEnum, MessageTypeEnum } from "@/enums/enums";
+import { AttachmentStatusEnum, MessageDirectionEnum, MessageStatusEnum, MessageTypeEnum, WebhookStatusEnum } from "@/enums/enums";
 import { db } from "../db";
 import { webhooks, profiles, messages, attachments } from "../db/schema";
 import { eq } from "drizzle-orm";
-import configService from "./config-service";
-import { inngest } from "@/inngest/client";
 
-class WebhookService {
+class WppWebhookService {
   constructor() { }
 
   async processWebhook(webhookId: string): Promise<string[]> {
@@ -19,14 +17,13 @@ class WebhookService {
       return [];
     }
 
-    const jobEnabled = await configService.getJobEnabled();
+    //const jobEnabled = await configService.getJobEnabled();
 
     const messageIds: string[] = [];
 
-    // Processing status
     await db
       .update(webhooks)
-      .set({ status: 2 })
+      .set({ statusId: WebhookStatusEnum.PROCESSING })
       .where(eq(webhooks.id, webhookId));
 
     try {
@@ -100,10 +97,11 @@ class WebhookService {
                     webhookId: webhookId,
                     messageUid: mid,
                     senderId: from,
+                    directionId: MessageDirectionEnum.INBOUND,
                     messageType: type,
                     content: content,
                     createdAt: createdAt,
-                    statusId: 1, // PENDING
+                    statusId: MessageStatusEnum.PENDING,
                   })
                   .returning();
 
@@ -120,7 +118,7 @@ class WebhookService {
                       messageId: newMessage.id,
                       originalId: media.id,
                       fileType: media.mime_type,
-                      statusId: 1, // PENDING
+                      statusId: AttachmentStatusEnum.PENDING,
                     });
                   }
                 }
@@ -131,10 +129,10 @@ class WebhookService {
         }
       }
 
-      let finalStatus = hasMessages ? 3 : 4;
+      let finalStatus = hasMessages ? WebhookStatusEnum.COMPLETED : WebhookStatusEnum.IGNORED;
       await db
         .update(webhooks)
-        .set({ status: finalStatus, processedAt: new Date() })
+        .set({ statusId: finalStatus, processedAt: new Date() })
         .where(eq(webhooks.id, webhookId));
 
       return messageIds;
@@ -143,12 +141,12 @@ class WebhookService {
       console.error("Error processing webhook", error);
       await db
         .update(webhooks)
-        .set({ status: 5 })
+        .set({ statusId: WebhookStatusEnum.FAILED })
         .where(eq(webhooks.id, webhookId));
       throw error;
     }
   }
 }
 
-const webhookService = new WebhookService();
-export default webhookService;
+const wppWebhookService = new WppWebhookService();
+export default wppWebhookService;
