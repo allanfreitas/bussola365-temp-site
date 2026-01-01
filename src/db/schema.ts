@@ -228,7 +228,14 @@ export const messageTemplates = pgTable("message_templates", {
     .default(sql`uuidv7()`)
     .primaryKey(),
   template: text("template").notNull(),
+  type: text('type').default('text').notNull(),
   content: text("content").notNull(),
+  variables: jsonb("variables").default({}),
+  buttonType: text('button_type'),
+  buttonText: text('button_text'),
+  flowName: text('flow_name'),
+  url: text('url'),
+  language: text('language'),
   active: smallint("active").default(1),
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()

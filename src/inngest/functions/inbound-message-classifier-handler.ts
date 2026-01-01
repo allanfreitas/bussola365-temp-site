@@ -18,7 +18,7 @@ export const inboundMessageClassifierHandler = inngest.createFunction(
 
             const domainEvent = await inboundMessageClassifier.execute(messageId);
 
-            if (domainEvent.name === InngestEventType.DoNothing || !jobsEnabled) {
+            if (!jobsEnabled || domainEvent.name === InngestEventType.DoNothing) {
                 continue;
             }
 

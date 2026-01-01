@@ -1,5 +1,7 @@
 - template: transaction_success
   active: 1
+  language: pt-br
+  type: text
   content: |-
     ✅ *Transação Registrada com Sucesso*
 
@@ -13,6 +15,8 @@
 
 - template: account_created
   active: 1
+  language: pt-br
+  type: text
   content: |-
     Olá, {{nome}}! 👋 Seja bem-vindo(a) ao Bússola365.
     🚀 Sua conta já está ativa! Você tem 7 dias gratuitos para organizar sua vida financeira sem planilhas chatas.
@@ -32,4 +36,28 @@
     "Quanto gastei com Uber esse mês?" "Qual o total de gastos da semana?"
 
     Vamos começar? Me conte uma despesa ou receita que você teve hoje! 👇
-#
+
+# signup_flow message
+- template: signup_flow
+  active: 1
+  language: pt-br
+  type: interactive
+  content: |-
+    Olá! 👋 Vi que você ainda não é um usuário do Bússola365.
+    Que tal começar agora com {{days}} dias grátis?
+    Clique no botão abaixo para se cadastrar:
+  buttonType: flow
+  flowName: dev_bussola365_signup_ptbr
+  buttonText: "Quero me cadastrar"
+
+# signup_followup message
+- template: signup_followup
+  active: 1
+  language: pt-br
+  type: text
+  content: |-
+    Com o Bússola365 você tem praticidade e controle:
+    📲 Controle fácil pelo WhatsApp: registre e consulte suas despesas e receitas em segundos, sem burocracia.
+    💻 E se quiser mais detalhes, acesse nosso painel web responsivo com análises completas e visão 360° da sua saúde financeira.
+
+#  

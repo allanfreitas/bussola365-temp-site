@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { webhooks } from "@/db/schema";
 import { inngest } from "@/inngest/client";
 import configService from "@/services/config-service";
+import { WebhookStatusEnum } from "@/enums/enums";
 
 // GET: Webhook Verification
 export async function GET(req: NextRequest) {
@@ -38,10 +39,10 @@ export async function POST(req: NextRequest) {
     const [inserted] = await db
       .insert(webhooks)
       .values({
-        platform: "whatsapp",
+        platformId: 1,
         payload: JSON.parse(bodyText),
         headers: Object.fromEntries(req.headers.entries()),
-        status: 1, // Pending
+        statusId: WebhookStatusEnum.PENDING,
         createdAt: new Date(),
         updatedAt: new Date(),
       })

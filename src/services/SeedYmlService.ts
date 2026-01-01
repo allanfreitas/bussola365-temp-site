@@ -9,6 +9,8 @@ import {
   messageIntents,
   prompts,
   messageTemplates,
+  codebookViews,
+  codebook,
 } from "../db/schema";
 import type { PgTable } from "drizzle-orm/pg-core";
 
@@ -19,7 +21,8 @@ type EntityType =
   | typeof coupons
   | typeof messageIntents
   | typeof prompts
-  | typeof messageTemplates;
+  | typeof messageTemplates
+  | typeof codebook;
 
 export class SeedYmlService {
   private seedBasePath: string;
@@ -40,6 +43,7 @@ export class SeedYmlService {
     await this.importFromFolder("MessageIntents", messageIntents);
     await this.importFromFolder("Prompts", prompts, "prompt"); // Special handling for prompts
     await this.importFromFolder("MessageTemplates", messageTemplates);
+    await this.importFromFolder("Codebook", codebook);
 
     console.log("Seeding completed.");
   }

@@ -1,5 +1,6 @@
 import { db } from "@/db";
 import { profiles, wallets, walletMembers } from "@/db/schema";
+import { WalletStatusEnum } from "@/enums/enums";
 import { eq } from "drizzle-orm";
 
 export class WalletService {
@@ -22,6 +23,9 @@ export class WalletService {
             .values({
                 name: profileName || "Pessoal",
                 description: "Conta Pessoal",
+                statusId: WalletStatusEnum.ACTIVE,
+                createdAt: new Date(),
+                updatedAt: new Date(),
             })
             .returning({ id: wallets.id });
 
