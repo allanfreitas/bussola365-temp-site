@@ -3,7 +3,7 @@ import { db } from "@/db";
 import { webhooks } from "@/db/schema";
 import { inngest } from "@/inngest/client";
 import configService from "@/services/config-service";
-import { WebhookStatusEnum } from "@/enums/enums";
+import { InngestEventType, WebhookStatusEnum } from "@/enums/enums";
 
 // GET: Webhook Verification
 export async function GET(req: NextRequest) {
@@ -53,8 +53,8 @@ export async function POST(req: NextRequest) {
     // Trigger Inngest Event (ProcessWebhookJob equivalent)
     if (jobEnabled) {
       await inngest.send({
-        name: "webhook.received",
-        data: { webhookId: inserted.id }
+        name: InngestEventType.WebhookReceived,
+        data: { webhookId: inserted.id, channel: "whatsapp" }
       });
     }
 

@@ -11,22 +11,40 @@ export const wppWebhookHandler = inngest.createFunction(
     },
     { event: InngestEventType.WebhookReceived },
     async ({ event }) => {
-        if (event.data.channel !== "whatsapp") return;
+        if (event.data.channel !== "whatsapp") return {
+            message: "Not a WhatsApp webhook, ignoring",
+        }
 
         const messageIds: string[] = await webhookService.processWebhook(event.data.webhookId);
 
-        if (!messageIds.length) return;
+        if (!messageIds.length) return {
+            message: "No messages extracted from webhook",
+        }
 
         const jobEnabled = await configService.getJobEnabled();
-        if (!jobEnabled) return;
+        if (!jobEnabled) return {
+            message: "Inbound message processing job is disabled",
+        }
 
-        await inngest.send({
-            name: InngestEventType.InboundMessage,
-            data: {
-                channel: "whatsapp",
-                messageIds,
-                extractedAt: new Date().toISOString(),
-            },
-        });
+        const payload = {
+            channel: "whatsapp",
+            messageIds,
+            extractedAt: new Date().toISOString(),
+        };
+
+        try {
+            await inngest.send({
+                name: InngestEventType.InboundMessage,
+                data: payload,
+            });
+                console.log("Dispatched inbound/message event:", payload);
+            } catch (err) {
+                console.error("Failed to dispatch event:", err);
+            }
+
+        return {
+            message: "Webhook processed successfully",
+            data: payload,
+        }
     }
 );

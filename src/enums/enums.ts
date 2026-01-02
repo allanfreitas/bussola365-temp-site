@@ -42,13 +42,13 @@ export const enum MyQueueEnum {
   CacheMessageMidia = "cache_message_midia",
 }
 
-export const enum InngestEnum {
-  WebhookReceived = "webhook.received",
-  MessageCreated = "message.created",
-  ProcessMessage = "process_message",
-  AnswerMessage = "answer_message",
-  CacheMessageMidia = "cache_message_midia",
-}
+// export const enum InngestEnum {
+//   WebhookReceived = "webhook.received",
+//   MessageCreated = "message.created",
+//   ProcessMessage = "process_message",
+//   AnswerMessage = "answer_message",
+//   CacheMessageMidia = "cache_message_midia",
+// }
 
 export const InngestEventType = {
   WebhookReceived: "channel.webhook.received",

@@ -2,7 +2,7 @@
 
 import messageRepo from "@/db/repo/message-repo";
 import profileRepo from "@/db/repo/profile-repo";
-import { ProfileStatusEnum } from "@/enums/enums";
+import { MessageTypeEnum, ProfileStatusEnum } from "@/enums/enums";
 import whatsappService from "./WhatsAppService";
 import wppSendMessageTemplate from "./wpp-send-message-template";
 
@@ -42,6 +42,22 @@ export class WppOnboardingService {
 
             profile.statusId = ProfileStatusEnum.ONBOARDING;
             await profileRepo.updateProfile(profile);
+        }
+
+        if (profile.statusId === ProfileStatusEnum.ONBOARDING) {
+            const typing = await whatsappService.typingIndicator(message.messageUid);
+            console.log(typing);
+
+            if (message.messageType === MessageTypeEnum.INTERACTIVE) {
+                const content = JSON.parse(message.content || "{}");
+                if (content?.type === "nfm_reply") {
+                    console.log("Onboarding NFM reply detected, sending next message...");
+                    console.log(content?.nfm_reply);
+                    const userResponse = JSON.parse(content?.nfm_reply?.response_json || "{}");
+                    console.log(userResponse);
+
+                }
+            }
         }
     }
 }

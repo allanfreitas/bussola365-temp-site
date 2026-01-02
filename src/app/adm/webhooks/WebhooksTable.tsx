@@ -19,12 +19,15 @@ import { WebhookStatusEnum } from "@/enums/enums";
 
 interface WebhookRecord {
     id: string;
-    platform: string;
+    platformId: string;
     eventType: string | null;
-    status: number | null;
+    statusId: number | null;
     payload: any;
     headers: any;
     createdAt: Date;
+    processedAt: Date | null;
+    statusName: string | null;
+    statusDescription: string | null;
     [key: string]: any;
 }
 
@@ -142,9 +145,9 @@ export function WebhooksTable({
             cell: ({ row }) => <span className="font-mono text-xs text-iron-grey-500">{row.original.id.slice(0, 8)}...</span>,
         },
         {
-            accessorKey: "platform",
+            accessorKey: "platformId",
             header: "Plataforma",
-            cell: ({ row }) => <Badge variant="secondary" className="bg-prussian-blue-800 text-jungle-green-400 border-none">{row.original.platform}</Badge>,
+            cell: ({ row }) => <Badge variant="secondary" className="bg-prussian-blue-800 text-jungle-green-400 border-none">{row.original.platformId}</Badge>,
         },
         {
             accessorKey: "eventType",
@@ -155,7 +158,7 @@ export function WebhooksTable({
             accessorKey: "status",
             header: "Status",
             cell: ({ row }) => {
-                const status = row.original.status;
+                const status = row.original.statusId;
                 return webhookStatusBadge(status as number || WebhookStatusEnum.PENDING);
             },
         },

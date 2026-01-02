@@ -88,7 +88,7 @@ class WppWebhookService {
                 let content = type === MessageTypeEnum.TEXT ? msgData.text?.body : null;
 
                 if (type === MessageTypeEnum.INTERACTIVE) {
-                  content = msgData.interactive;
+                  content = JSON.stringify(msgData.interactive);
                 }
 
                 const [newMessage] = await db

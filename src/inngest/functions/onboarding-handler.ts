@@ -1,5 +1,5 @@
 // inngest/functions/onboarding-handler.ts
-import { InngestEnum, InngestEventType } from "@/enums/enums";
+import { InngestEventType } from "@/enums/enums";
 import { inngest } from "@/inngest/client";
 import wppOnboardingService from "@/services/wpp-onboarding-service";
 

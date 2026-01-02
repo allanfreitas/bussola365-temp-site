@@ -1,6 +1,6 @@
 import { db } from "@/db";
-import { webhooks } from "@/db/schema";
-import { desc, sql, count } from "drizzle-orm";
+import { codebookViews, vwWebhookStatus, webhooks } from "@/db/schema";
+import { desc, sql, count, eq } from "drizzle-orm";
 import { WebhooksTable } from "./WebhooksTable";
 
 export const dynamic = "force-dynamic";
@@ -16,13 +16,27 @@ export default async function WebhooksPage({
     const offset = (pageNumber - 1) * limitNumber;
 
     const [allWebhooks, [{ total }]] = await Promise.all([
-        db.query.webhooks.findMany({
-            orderBy: [desc(webhooks.createdAt)],
-            limit: limitNumber,
-            offset: offset,
-        }),
+        db
+            .select({
+                id: webhooks.id,
+                platformId: webhooks.platformId,
+                processedAt: webhooks.processedAt,
+                statusId: webhooks.statusId,
+                payload: webhooks.payload,
+                createdAt: webhooks.createdAt,
+                updatedAt: webhooks.updatedAt,
+                statusName: vwWebhookStatus.description,
+                statusDescription: vwWebhookStatus.description,
+            })
+            .from(webhooks)
+            .leftJoin(vwWebhookStatus, eq(webhooks.statusId, vwWebhookStatus.id))
+            .orderBy(desc(webhooks.createdAt))
+            .limit(limitNumber)
+            .offset(offset),
+
         db.select({ total: count() }).from(webhooks),
     ]);
+
 
     const pageCount = Math.ceil(Number(total) / limitNumber);
 

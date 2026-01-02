@@ -7,9 +7,9 @@ export class WhatsAppService {
 
   constructor() {
     //console.log("WhatsAppService constructor");
-    this.apiToken = process.env.META_API_TOKEN || "";
+    this.apiToken = process.env.META_API_ACCESS_TOKEN || "";
     if (!this.apiToken) {
-      console.error("META_API_TOKEN not set");
+      console.error("META_API_ACCESS_TOKEN not set");
     }
   }
 

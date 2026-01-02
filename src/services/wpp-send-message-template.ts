@@ -4,10 +4,12 @@ import { db } from "@/db";
 import { messageTemplates, Profile } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import whatsappService from "./WhatsAppService";
+import { WhatsAppNumberFixer } from "@/lib/helpers/whats-app-number-fixer";
 
 export class WppSendMessageTemplate {
     async execute(templateName: string, to: string, variables: Record<string, string> = {}) {
         const [tpl] = await db.select().from(messageTemplates).where(eq(messageTemplates.template, templateName));
+        to = WhatsAppNumberFixer.adjustBrazilianNumber(to);
 
         if (!tpl) {
             throw new Error("Template not found");
@@ -26,38 +28,53 @@ export class WppSendMessageTemplate {
                 type: "text",
                 text: {
                     preview_url: false,
-                    language: tpl.language,
+                    //language: tpl.language,
                     body: contentFinal
                 },
             };
         } else if (tpl.type === "interactive") {
-            const button: any = { type: tpl.buttonType };
+            // const button: any = { type: tpl.buttonType };
+            // if (tpl.buttonType === "flow") {
+            //     button.flow = { name: tpl.flowName, button_text: tpl.buttonText, };
+            // } else if (tpl.buttonType === "url") {
+            //     button.url = tpl.url;
+            //     button.text = tpl.buttonText;
+            // }
+
             if (tpl.buttonType === "flow") {
-                button.flow = { name: tpl.flowName, button_text: tpl.buttonText, };
-            } else if (tpl.buttonType === "url") {
-                button.url = tpl.url;
-                button.text = tpl.buttonText;
+                payload = {
+                    recipient_type: "individual",
+                    messaging_product: "whatsapp",
+                    to,
+                    type: "interactive",
+                    interactive: {
+                        type: "flow",
+                        //header: { type: "text", text: "WhatsApp Flow Header" },
+                        body: { text: contentFinal },
+                        //footer: { text: "Por Bússola365" },
+                        action: {
+                            name: "flow",
+                            parameters: {
+                                flow_message_version: "3",
+                                flow_name: tpl.flowName,
+                                flow_cta: tpl.buttonText
+                            }
+                        }
+                    }
+                };
             }
-            payload = {
-                messaging_product: "whatsapp",
-                to: to,
-                type: "interactive",
-                interactive: {
-                    type: "button",
-                    language: tpl.language,
-                    body: { text: contentFinal },
-                    action: { buttons: [button] },
-                },
-            };
+
+            // implement other interactive types if needed
         }
 
         const response = await whatsappService.sendMessage(payload);
         return response;
     }
 
-    private applyVariables(content: string, variables: Record<string, string>): string {
+    private applyVariables(content: string, variables: Record<string, string> | null | undefined): string {
         let result = content;
-        for (const [key, value] of Object.entries(variables)) {
+        const safeVars = variables ?? {};
+        for (const [key, value] of Object.entries(safeVars)) {
             result = result.replace(new RegExp(key, "g"), value);
         }
         return result;

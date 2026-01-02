@@ -1,22 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { AdmDevActionEnum, InngestEnum } from "@/enums/enums";
+import { AdmDevActionEnum, InngestEventType } from "@/enums/enums";
 import { AdminActionPayload } from "@/types/admin-action-payload";
 import { headers } from "next/headers";
-
-//
 import { inngest } from "@/inngest/client";
-//
-import webhookService from "@/services/wpp-webhook-service";
 
 const actions: Record<AdmDevActionEnum, (recordId: string) => Promise<any> | any> = {
     [AdmDevActionEnum.ProcessWebhook]: async (recordId: string) => {
-        // const webhookService = new WebhookService();
-        //const messageIds = await webhookService.processWebhook(recordId);
 
         await inngest.send({
-            name: InngestEnum.WebhookReceived,
-            data: { webhookId: recordId }
+            name: InngestEventType.WebhookReceived,
+            data: { webhookId: recordId, channel: "whatsapp", }
         });
 
         return { message: "Processamento de webhook agendado com sucesso" };
